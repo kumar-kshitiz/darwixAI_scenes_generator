@@ -1,41 +1,78 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pitch Visualizer</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
-<h2>Pitch Visualizer</h2>
+    <main class="container">
+        <header class="hero">
+            <h1 class="gradient-text">Pitch Visualizer</h1>
+            <p class="subtitle">Bring your story to life with AI-generated scenes</p>
+        </header>
 
-<form method="POST">
-    <textarea name="story" rows="5" cols="60" placeholder="Enter your story..."></textarea>
-    <br><br>
+        <section class="input-section glass-panel">
+            <form method="POST" id="story-form">
+                <div class="form-group">
+                    <label for="story">Your Story</label>
+                    <textarea id="story" name="story" rows="5" placeholder="Enter an engaging story... Once upon a time in a cyberpunk city..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="style">Visual Style</label>
+                    <input type="text" id="style" name="style" placeholder="e.g. digital art, cinematic, anime" value="digital art">
+                </div>
 
-    <label>Style:</label>
-    <input type="text" name="style" placeholder="e.g. digital art, anime">
-    <br><br>
-
-    <button type="submit">Generate Storyboard</button>
-</form>
-
-<hr>
-
-{% if storyboard %}
-    <h3>Storyboard</h3>
-
-    {% for scene in storyboard %}
-        <div style="margin-bottom: 30px;">
+                <button type="submit" class="generate-btn">
+                    <span class="btn-text">Generate Storyboard</span>
+                    <span class="btn-glow"></span>
+                </button>
+            </form>
             
-            {% if scene.image %}
-                <img src="/{{ scene.image }}" width="300"><br>
-            {% else %}
-                <p><b>⚠️ Image failed to generate</b></p>
+            {% if error %}
+            <div class="error-message">
+                <p>⚠️ {{ error }}</p>
+            </div>
             {% endif %}
+        </section>
 
-            <p>{{ scene.text }}</p>
-        </div>
-    {% endfor %}
-{% endif %}
+        {% if storyboard %}
+        <section class="storyboard-section">
+            <h2 class="section-title">Your Masterpiece</h2>
+            <div class="storyboard-grid">
+                {% for scene in storyboard %}
+                <div class="scene-card glass-panel">
+                    <div class="scene-number">Scene {{ scene.scene_no }}</div>
+                    <div class="image-container">
+                        {% if scene.image %}
+                            <img src="/{{ scene.image }}" alt="Scene Image">
+                        {% else %}
+                            <div class="placeholder-image">
+                                <p><b>⚠️ Image failed to generate</b></p>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="scene-content">
+                        <p class="scene-text">{{ scene.text }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+    </main>
 
+    <script>
+        document.getElementById('story-form').addEventListener('submit', function() {
+            var btn = this.querySelector('.generate-btn');
+            btn.classList.add('loading');
+            btn.querySelector('.btn-text').innerText = 'Visualizing...';
+        });
+    </script>
 </body>
 </html>
