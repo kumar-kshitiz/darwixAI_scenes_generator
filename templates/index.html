@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pitch Visualizer</title>
+</head>
+<body>
+
+<h2>Pitch Visualizer</h2>
+
+<form method="POST">
+    <textarea name="story" rows="5" cols="60" placeholder="Enter your story..."></textarea>
+    <br><br>
+
+    <label>Style:</label>
+    <input type="text" name="style" placeholder="e.g. digital art, anime">
+    <br><br>
+
+    <button type="submit">Generate Storyboard</button>
+</form>
+
+<hr>
+
+{% if storyboard %}
+    <h3>Storyboard</h3>
+
+    {% for scene in storyboard %}
+        <div style="margin-bottom: 30px;">
+            
+            {% if scene.image %}
+                <img src="/{{ scene.image }}" width="300"><br>
+            {% else %}
+                <p><b>⚠️ Image failed to generate</b></p>
+            {% endif %}
+
+            <p>{{ scene.text }}</p>
+        </div>
+    {% endfor %}
+{% endif %}
+
+</body>
+</html>
